@@ -1,6 +1,7 @@
 # Unchained
 
-**Your Music. Unlocked.**  
+**Your Music. Unchained.** 
+
 Unchained is a music management platform that gives you total control over your MP3s. Upload, organize, and listen to your personal audio collection from the browser — no algorithms, no restrictions, no streaming limits.
 
 ---
@@ -9,7 +10,7 @@ Unchained is a music management platform that gives you total control over your 
 
 Unchained is a complete reimagining of my original project, TuneTrack — a music playlist tool I built when first learning web development. While TuneTrack focused on in-browser playlist management, Unchained expands that idea into a full-featured personal music platform, built from the ground up with modern architecture and deep customization.
 
-This project is designed to balance freedom, control, and ownership — you manage your own music files, create your own listening experience, and define your own data structures.
+This project is designed to balance freedom, control, and ownership — you manage your own music files and create your own listening experience.
 
 ---
 
@@ -52,11 +53,11 @@ This project is designed to balance freedom, control, and ownership — you mana
 
 ## Stretch Goals (Future Features)
 
+- Public profiles: followers, friends, and public playlists / collections
+- A "favoriting" system for playlists and songs
 - User authentication and login
 - Optional cloud storage (S3)
 - Import audio from YouTube (for personal use only)
-- Mobile-responsive design
-- Unit tests and end-to-end tests
 
 ---
 
