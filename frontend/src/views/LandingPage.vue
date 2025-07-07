@@ -52,7 +52,7 @@
     <section class="section learn-more">
       <div class="container">
         <h2>Learn More.</h2>
-        <router-link to="/about" class="btn primary">Learn More</router-link>
+        <router-link to="https://github.com/Jbruinsma/Unchained" class="btn primary">Learn More</router-link>
       </div>
     </section>
 
