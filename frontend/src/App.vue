@@ -6,14 +6,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watchEffect } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import BottomPlayer from '@/components/BottomPlayer.vue'
 import { useUserStore } from '@/stores/user.js'
 import { useMusicStore } from '@/stores/music.js'
 import { fetchAPI } from '@/utils/api.js'
 
-const bannedRoutes = ['/', '/login', '/register']
+const bannedRoutes = ['/', '/about', '/login', '/register']
 
 const route = useRoute()
 const userStore = useUserStore()
