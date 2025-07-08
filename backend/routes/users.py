@@ -7,6 +7,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 
 from backend.classes.user_manager import save_user_manager
+from backend.config import PFPS_DIR
 from backend.instances import user_manager
 
 users_bp = Blueprint('users', __name__)
@@ -49,7 +50,7 @@ def update_profile_picture(username):
     if not file: return jsonify({"error": "No file uploaded"}), 400
 
     filename = secure_filename(file.filename)
-    file.save(os.path.join("uploads", "pfps", filename))
+    file.save(os.path.join(PFPS_DIR, filename))
 
     file_path = f"/uploads/pfps/{filename}"
     user.update_profile_picture(file_path)

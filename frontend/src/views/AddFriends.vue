@@ -110,6 +110,8 @@
 
 <script setup>
 
+import { API_BASE_URL } from '@/utils/variables.js'
+
 const testUsername = 'test_user'
 const testPlaylistUUID = 'test_playlist_1'
 
@@ -134,7 +136,8 @@ const { username, id } = useRoute().params
 
 
 onMounted(async () => {
-  const playlistInfo = await fetchAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}`)
+  const url = `${API_BASE_URL}/api/playlists/${username}/${id}`
+  const playlistInfo = await fetchAPI(url)
   owner.value = playlistInfo.owner
 
   if (currentUser.value !== owner.value) {
@@ -155,7 +158,8 @@ async function addFriend() {
   }
 
   try {
-    const data = await fetchAPI(`http://127.0.0.1:5000/api/users/check-username/${trimmed}`)
+    const url = `${API_BASE_URL}/api/users/check-username/${trimmed}`
+    const data = await fetchAPI(url)
 
     if (data.exists) {
       friendList.value.push({ username: trimmed, canEdit: false, isNew: true })
@@ -179,7 +183,8 @@ async function submitFriends() {
 
   for (const friend of friendList.value) { delete friend.isNew }
 
-  await postToAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}/add/friends`, {
+  const url = `${API_BASE_URL}/api/playlists/${username}/${id}/add/friends`
+  await postToAPI(url, {
     friends: friendList.value
   })
   await router.push(`/playlist/${username}/${id}`)

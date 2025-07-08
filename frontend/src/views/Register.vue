@@ -52,6 +52,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { postToAPI } from '@/utils/api.js'
 import { useUserStore } from '@/stores/user.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -70,7 +71,8 @@ async function register() {
   }
 
   try {
-    const response = await postToAPI('/api/auth/register', {
+    const url = `${API_BASE_URL}/api/auth/register`
+    const response = await postToAPI(url, {
       username: username.value,
       password: password.value,
     }, true)

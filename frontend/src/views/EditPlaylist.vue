@@ -109,6 +109,7 @@ import router from '@/router/index.js'
 import { useRoute } from 'vue-router'
 import { displayArtist, resolveCoverURL } from '@/utils/display.js'
 import { useMusicStore } from '@/stores/music.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const route = useRoute()
 const { username, id } = route.params
@@ -147,7 +148,10 @@ onMounted(async () => {
       return
     }
 
-    const playlistInfo = await fetchAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}`)
+    const url = `${API_BASE_URL}/api/playlists/${username}/${id}`
+    const playlistInfo = await fetchAPI(url)
+
+    console.log("Playlist Info:", playlistInfo)
 
     let canAccess = false
 
@@ -182,21 +186,27 @@ onMounted(async () => {
 
 async function saveChanges() {
   const formData = new FormData()
+
   formData.append('name', playlistChanges.value.name ?? '')
+
+  if (playlistChanges.value.isPublic === null) { formData.append('isPublic', playlist.value.isPublic) }
+  else { formData.append('isPublic', playlistChanges.value.isPublic) }
+
   formData.append('isPublic', playlistChanges.value.isPublic)
-  console.log("IS PUBLIC? ", playlistChanges.value.isPublic)
   formData.append('musicDeleted', JSON.stringify(playlistChanges.value.musicDeleted))
   if (playlistChanges.value.cover) {
     formData.append('cover', playlistChanges.value.cover)
   }
   try {
-    await postToAPI(`/api/playlists/${username}/${id}/edit`, formData, false)
+    const postURL = `${API_BASE_URL}/api/playlists/${username}/${id}/edit`
+    await postToAPI(postURL, formData, false)
     if (musicStore.getCurrentPlaylistUUID() === id) {
       const deletedIds = playlistChanges.value.musicDeleted.map(d => d.uuid)
 
       if (deletedIds.includes(musicStore.getCurrentMusicPieceUUID())) { musicStore.reset() }
 
-      const updated = await fetchAPI(`/api/playlists/${username}/${id}/play?shuffle=false`)
+      const fetchURL = `${API_BASE_URL}/api/playlists/${username}/${id}/play?shuffle=false`
+      const updated = await fetchAPI(fetchURL)
       musicStore.playlist = updated.playlist
       musicStore.orderedPlaylist.orderedPlaylist = updated.orderedPlaylist
       musicStore.setCurrentPlaylistIndex(updated.startIndex)
@@ -208,7 +218,6 @@ async function saveChanges() {
       }
 
       playlistChanges.value.musicDeleted = []
-      console.log("Saving Last Playback!")
       await musicStore.saveLastPlayback(userStore.userData?.username)
     }
 
@@ -217,8 +226,6 @@ async function saveChanges() {
     console.error('Save error:', err)
   }
 }
-
-
 
 function togglePublicStatus(newStatus) {
   console.log("Playlist is now public?", newStatus)
@@ -232,10 +239,10 @@ function triggerCoverUpload() {
 function handleCoverChange(event) {
   const file = event.target.files[0]
   if (file) {
-    if (oldPreview) {
+    if (oldPreview.value) {
       URL.revokeObjectURL(oldPreview)
     }
-    oldPreview = URL.createObjectURL(file)
+    oldPreview.value = URL.createObjectURL(file)
     playlist.value.cover = oldPreview
     playlistChanges.value.cover = file
     addUpdate('cover', file)

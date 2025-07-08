@@ -109,11 +109,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 import { fetchAPI, postToAPI } from '@/utils/api.js'
 import { v4 as uuidv4 } from 'uuid'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const { username, id } = useRoute().params
-
-const testUsername = 'test_user'
-const testPlaylistUUID = 'test_playlist_1'
 
 const isOwner = ref(false)
 const fileInput = ref(null)
@@ -125,27 +123,26 @@ const playlistName = ref('')
 
 const userStore = useUserStore()
 const currentUser = userStore.userData?.username
-// const currentUser = 'friend_1'
-console.log('CURRENT USER: ', currentUser)
 
 onMounted(async () => {
-  const playlistInfo = await fetchAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}`)
+  const url = `${API_BASE_URL}/api/playlists/${username}/${id}`
+  const playlistInfo = await fetchAPI(url)
   isOwner.value = playlistInfo.owner === currentUser
 
   playlistName.value = playlistInfo.name
 
   let isSharedWith = false
-  let can_edit = false
+  let canEdit = false
 
   for (const userSharedWith of playlistInfo.sharedWith) {
     if (userSharedWith.username === currentUser) {
       isSharedWith = true
-      can_edit = userSharedWith.canEdit
+      canEdit = userSharedWith.canEdit
       break
     }
   }
 
-  const canAccess = isOwner.value || (isShared_with && can_edit)
+  const canAccess = isOwner.value || (isSharedWith && canEdit)
 
   if (!canAccess) {
     await router.push('/dashboard')
@@ -185,7 +182,8 @@ function submitFiles() {
 
   formData.append('uuids', JSON.stringify(uuids));
 
-  postToAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}/add`, formData, false)
+  const url = `${API_BASE_URL}/api/playlists/${username}/${id}/add`;
+  postToAPI(url, formData, false)
     .then(response => {
       console.log('Files uploaded:', response);
       router.push(`/playlist/${username}/${id}`);

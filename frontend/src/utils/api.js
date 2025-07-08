@@ -23,10 +23,7 @@ export async function postToAPI(url, data, isJson = true) {
   if (isJson) {
     options.headers = { 'Content-Type': 'application/json' }
     options.body = JSON.stringify(data)
-  } else {
-    // Don't set headers at all, let the browser handle multipart/form-data
-    options.body = data
-  }
+  } else { options.body = data }
 
   return fetch(url, options)
     .then(response => {

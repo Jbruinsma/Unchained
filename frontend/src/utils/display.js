@@ -1,6 +1,8 @@
+import { API_BASE_URL } from '@/utils/variables.js'
+
 export function resolveCoverURL(cover) {
   return cover.startsWith('/uploads')
-    ? `http://127.0.0.1:5000${cover}`
+    ? `${API_BASE_URL}${cover}`
     : cover
 }
 

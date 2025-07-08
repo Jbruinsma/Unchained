@@ -98,6 +98,7 @@ import { fetchAPI, postToAPI } from '@/utils/api.js'
 import {displayArtist, resolveCoverURL} from '@/utils/display.js'
 import { useMusicStore } from '@/stores/music.js'
 import { useUserStore } from '@/stores/user.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -120,7 +121,8 @@ const coverInput = ref(null)
 let oldPreview = null
 
 onMounted(async () => {
-  const pieceInfo = await fetchAPI(`http://127.0.0.1:5000/api/playlists/summary/${username}/${playlist_id}/music_piece/${index}/${uuid}`)
+  const url = `${API_BASE_URL}/api/playlists/summary/${username}/${playlist_id}/music_piece/${index}/${uuid}`
+  const pieceInfo = await fetchAPI(url)
   musicPiece.value.cover = pieceInfo.cover
   musicPiece.value.audio = pieceInfo.audio
   musicPiece.value.title = pieceInfo.title
@@ -151,7 +153,8 @@ async function saveChanges() {
     formData.append('cover', musicPiece.value.newCoverFile)
   }
 
-  const response = await postToAPI(`/api/playlists/update/${username}/${playlist_id}/music_piece/${index}/${uuid}`, formData, false)
+  const url = `${API_BASE_URL}/api/playlists/update/${username}/${playlist_id}/music_piece/${index}/${uuid}`
+  const response = await postToAPI(url, formData, false)
   const updatedPiece = response.musicPiece
 
   if (musicStore.getCurrentPlaylistUUID() === playlist_id) {

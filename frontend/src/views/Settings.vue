@@ -113,6 +113,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 import { resolveCoverURL } from '@/utils/display.js'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 
 const user = ref(null)
@@ -148,7 +149,8 @@ let username = useRoute().params.username
 if (username !== currentUser) { useRouter().back() }
 
 onMounted(async () => {
-  user.value = await fetchAPI(`http://127.0.0.1:5000/api/users/profile/${username}`)
+  const url = `${API_BASE_URL}/api/users/profile/${username}`
+  user.value = await fetchAPI(url)
 })
 
 function toggleUsername() {
@@ -170,10 +172,10 @@ async function performUpdate() {
   if (actionType.value === 'username') {
     if (newUsername.value === currentUser) { toggleUsernameErrorMessage("You cannot change your username to your current username.") }
     else if (newUsername.value.length < 3 || newUsername.value.length > 20 || newUsername.value.includes(' ')) { toggleUsernameErrorMessage("Username must be between 3 and 20 characters, and cannot contain spaces.") }
-    else if (await fetchAPI(`http://127.0.0.1:5000/api/users/check-username/${newUsername.value}`) === true){
+    else if (await fetchAPI(`${API_BASE_URL}/api/users/check-username/${newUsername.value}`) === true){
       toggleUsernameErrorMessage("Username is already taken.")
     } else {
-      const data = await postToAPI(`http://127.0.0.1:5000/api/users/${currentUser}/update-username/${newUsername.value}`, null, true)
+      const data = await postToAPI(`${API_BASE_URL}/api/users/${currentUser}/update-username/${newUsername.value}`, null, true)
       if ('error' in data){ toggleUsernameErrorMessage(data.error) }
       else { toggleUsernameSuccessMessage( `Your username has been successfully updated to @${newUsername.value}.`) }
       user.value.username = newUsername.value
@@ -188,7 +190,7 @@ async function performUpdate() {
     else if (newPassword.value.length < 8 || newPassword.value.length > 64) { togglePasswordErrorMessage("Password must be between 8 and 64 characters.") }
     else if (/^\s+$/.test(newPassword.value)) { togglePasswordErrorMessage("Password cannot be only spaces.") }
     else {
-      const data = await postToAPI(`http://127.0.0.1:5000/api/users/${currentUser}/update-password`, {'old_password': oldPassword.value, 'new_password': newPassword.value}, true)
+      const data = await postToAPI(`${API_BASE_URL}/api/users/${currentUser}/update-password`, {'old_password': oldPassword.value, 'new_password': newPassword.value}, true)
       if ('error' in data){ togglePasswordErrorMessage(data.error) }
       else { togglePasswordSuccessMessage("Your password has been successfully updated.") }
       oldPassword.value = ''
@@ -204,7 +206,7 @@ async function performUpdate() {
 
 async function deleteAccount() {
   const currentUser = userStore.userData?.username
-  await fetchAPI(`http://127.0.0.1:5000/api/users/${currentUser}/delete`)
+  await fetchAPI(`${API_BASE_URL}/api/users/${currentUser}/delete`)
   userStore.logout()
   await router.push({ name: 'Home' })
 }
@@ -247,7 +249,7 @@ async function uploadProfilePic(file) {
   formData.append("profile_picture", file);
 
   try {
-    const response = await fetch(`http://127.0.0.1:5000/api/users/${username}/update/profile-picture`, {
+    const response = await fetch(`${API_BASE_URL}/api/users/${username}/update/profile-picture`, {
       method: 'POST',
       body: formData
     });

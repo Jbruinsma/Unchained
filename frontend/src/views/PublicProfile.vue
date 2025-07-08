@@ -53,24 +53,21 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import {onMounted, ref} from 'vue'
 import {fetchAPI} from "@/utils/api.js";
 import {resolveCoverURL} from "@/utils/display.js";
-import { useUserStore } from '@/stores/user.js'
 import { rerouteToDashboard, rerouteToPublicProfile, rerouteToSettings } from '@/utils/reroutes.js'
-
-const userStore = useUserStore()
-const currentUser = userStore.userData?.username
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const route = useRoute()
-const router = useRouter()
 const username = route.params.username
 const user = ref(null)
 const publicPlaylists = ref([])
 
 onMounted(async () => {
-  const data = await fetchAPI(`http://127.0.0.1:5000/api/users/profile/${username}`)
+  const url = `${API_BASE_URL}/api/users/profile/${username}`
+  const data = await fetchAPI(url)
   user.value = data
 
   if ("error" in data) { console.log("Error fetching user:", data.error) }

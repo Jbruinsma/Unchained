@@ -24,7 +24,8 @@ class Playlist:
 
     def update_playlist(self, name : str, is_public : bool, playlist_cover : str, pieces_deleted : list[dict[str, str]]) -> None:
         self.update_playlist_name(name)
-        self.update_public_status(is_public)
+        if is_public != 'null':
+            self.update_public_status(is_public)
         self.update_playlist_cover(playlist_cover)
 
         for deleted_piece in pieces_deleted:

@@ -61,6 +61,7 @@ import { useRouter } from 'vue-router'
 import { v4 as uuidv4 } from 'uuid'
 import { useUserStore } from '@/stores/user.js'
 import { postToAPI } from '@/utils/api.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const userStore = useUserStore()
 const currentUser = userStore.userData?.username
@@ -100,7 +101,9 @@ async function createPlaylist() {
     formData.append('name', playlistName.value)
     formData.append('isPublic', isPublic.value)
     formData.append('cover', coverFile.value)
-    const postRequest = await postToAPI(`http://127.0.0.1:5000/api/playlists/${currentUser}/create`, formData, false)
+
+    const url = `${API_BASE_URL}/api/playlists/${currentUser}/create`
+    const postRequest = await postToAPI(url, formData, false)
 
     if ('error' in postRequest) {
       await router.push('/dashboard')

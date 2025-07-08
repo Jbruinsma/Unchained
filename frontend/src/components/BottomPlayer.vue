@@ -174,7 +174,6 @@ async function onLoadedMetadata() {
   const audio = audioRef.value
   duration.value = audio.duration
 
-  // restore the saved position if it’s valid
   if (musicStore.position > 0 && musicStore.position < duration.value) {
     audio.currentTime = musicStore.position
   } else {

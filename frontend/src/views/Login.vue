@@ -30,6 +30,7 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { postToAPI } from '@/utils/api.js'
 import { useUserStore } from '@/stores/user.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const username = ref('')
 const password = ref('')
@@ -43,7 +44,8 @@ const route = useRoute()
 const redirectTo = route.query.redirect || '/dashboard'
 async function handleLogin(){
   try {
-    const response = await postToAPI(`http://127.0.0.1:5000/api/auth/login`,{
+    const url = `${API_BASE_URL}/api/auth/login`
+    const response = await postToAPI(url,{
       username: username.value,
       password: password.value
     }, true)

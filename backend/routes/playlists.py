@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from backend.classes.music_piece import MusicPiece
 from backend.classes.playlist import Playlist
 from backend.classes.user_manager import save_user_manager
+from backend.config import COVERS_DIR, MP3S_DIR
 from backend.instances import user_manager
 from backend.utils.playlist import randomize_playlist
 
@@ -37,7 +38,7 @@ def add_mp3s_to_playlist(username):
     if cover_file:
         print("Received cover file:", cover_file.filename)
         filename = secure_filename(cover_file.filename)
-        cover_file.save(os.path.join("uploads", "covers", filename))
+        cover_file.save(os.path.join(COVERS_DIR, filename))
         file_name = f"/uploads/covers/{filename}"
     else:
         print("No cover file received.")
@@ -84,11 +85,15 @@ def edit_playlist(username, playlist_id):
     cover_file = request.files.get('cover')
     new_name = playlist_changes.get('name')
     is_public = True if playlist_changes.get('isPublic') == 'true' else False
+
+    print(playlist_changes.get('isPublic'))
+    print(f"IS PUBLIC: {is_public}")
+
     music_deleted = json.loads(playlist_changes.get('musicDeleted', '[]'))
 
     if cover_file:
         filename = secure_filename(cover_file.filename)
-        cover_file.save(os.path.join("uploads", "covers", filename))
+        cover_file.save(os.path.join(COVERS_DIR, filename))
         file_name = f"/uploads/covers/{filename}"
     else:
         file_name = user_playlist.playlist_cover
@@ -96,6 +101,7 @@ def edit_playlist(username, playlist_id):
     user_playlist.update_playlist(name= new_name, is_public= is_public, playlist_cover= file_name, pieces_deleted= music_deleted)
 
     if not is_public:
+        print("THIS SHOULD NOT EXECUTE")
         for user in user_playlist.saved_by:
             user_obj = user_manager.search(user)
             user_obj.remove_public_playlist_from_library(playlist_uuid= user_playlist.UUID)
@@ -120,7 +126,7 @@ def add_music_piece_to_playlist(username, playlist_id):
 
     for mp3_file, uuid in zip(mp3_files, uuids):
         filename = secure_filename(mp3_file.filename)
-        save_path = os.path.join("uploads", "mp3s", filename)
+        save_path = os.path.join(MP3S_DIR, filename)
         mp3_file.save(save_path)
         print(f"Saved: {filename} as UUID: {uuid}")
 
@@ -135,6 +141,9 @@ def add_music_piece_to_playlist(username, playlist_id):
 
 @playlists_bp.route('/<username>/<playlist_id>/add/friends', methods=['POST'])
 def add_friends_to_playlist(username, playlist_id):
+
+    print(f"Adding friends to playlist {playlist_id} for user {username}")
+
     user = user_manager.search(username)
     if not user: return jsonify({"error": "User not found"}), 404
 
@@ -194,7 +203,7 @@ def update_music_piece(username, playlist_id, index, mp3_uuid):
 
     if new_cover:
         filename = secure_filename(new_cover.filename)
-        new_cover.save(os.path.join("uploads", "covers", filename))
+        new_cover.save(os.path.join(COVERS_DIR, filename))
         music_piece.cover = f"/uploads/covers/{filename}"
 
     music_piece.artist = new_artist

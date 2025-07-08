@@ -313,6 +313,7 @@ import { useRoute } from 'vue-router'
 import { isLoggedIn } from '@/utils/user.js'
 import { useMusicStore } from '@/stores/music.js'
 import { rerouteToDashboard, rerouteToPublicProfile, rerouteToSettings } from '@/utils/reroutes.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const userStore = useUserStore()
 const currentUser = userStore.userData?.username
@@ -342,7 +343,8 @@ const { username, id } = route.params
 
 onMounted(async () => {
   try {
-    const playlistInfo = await fetchAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}`)
+    const url = `${API_BASE_URL}/api/playlists/${username}/${id}`
+    const playlistInfo = await fetchAPI(url)
 
     if ('error' in playlistInfo) {
       await router.push('/dashboard')
@@ -423,10 +425,9 @@ async function addPublicPlaylistToLibrary() {
     await router.push({ name: 'Login', query: { redirect: route.fullPath } })
     return
   }
-  const response = await postToAPI(
-    `http://127.0.0.1:5000/api/users/${currentUser}/add-public-playlist`,
-    {
-      playlist_owner: username,
+  const url = `${API_BASE_URL}/api/users/${currentUser}/add-public-playlist`
+  const response = await postToAPI(url, {
+    playlist_owner: username,
       playlist_uuid: id,
     },
     true,
@@ -453,11 +454,11 @@ async function removePlaylistFromLibrary() {
   canEdit.value = false
   showMenu.value = false
 
-  let url = `http://127.0.0.1:5000/api/users/${currentUser}/remove-public-playlist`
+  let url = `${API_BASE_URL}/api/users/${currentUser}/remove-public-playlist`
 
   for (const userSharedWith of playlist.value.added){
     if (userSharedWith.username === currentUser) {
-      url = `http://127.0.0.1:5000/api/users/${currentUser}/remove-added-to-playlist`
+      url = `${API_BASE_URL}/api/users/${currentUser}/remove-added-to-playlist`
     }
   }
 
@@ -495,7 +496,8 @@ function attemptDeletePlaylist() {
 
 async function confirmDelete() {
   try {
-    await postToAPI(`http://127.0.0.1:5000/api/playlists/${username}/${id}/delete`)
+    const url = `${API_BASE_URL}/api/playlists/${username}/${id}/delete`
+    await postToAPI(url)
     if (musicStore.getCurrentPlaylistUUID() === id){ musicStore.reset() }
     await router.push('/dashboard')
   } catch (err) {

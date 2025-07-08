@@ -12,8 +12,9 @@ import BottomPlayer from '@/components/BottomPlayer.vue'
 import { useUserStore } from '@/stores/user.js'
 import { useMusicStore } from '@/stores/music.js'
 import { fetchAPI } from '@/utils/api.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
-const bannedRoutes = ['/', '/about', '/login', '/register']
+const bannedRoutes = ['/', '/login', '/register']
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -27,7 +28,7 @@ const hideBottomPlayerOnThisRoute = computed(() => {
 
 watchEffect(async () => {
   if (userStore.loggedIn) {
-    const url = `http://127.0.0.1:5000/api/users/${userStore.userData.username}/get-last-playback`
+    const url = `${API_BASE_URL}/api/users/${userStore.userData.username}/get-last-playback`
     try {
       const data = await fetchAPI(url)
 

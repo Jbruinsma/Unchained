@@ -40,6 +40,7 @@ import { useUserStore } from '@/stores/user.js'
 import { resolveCoverURL } from '@/utils/display.js'
 import router from '@/router/index.js'
 import { rerouteToDashboard, rerouteToPublicProfile, rerouteToSettings } from '@/utils/reroutes.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 const userStore = useUserStore()
 
@@ -55,7 +56,9 @@ onMounted(async () => {
     await router.push('/login')
     return
   }
-  const data = await fetchAPI(`http://127.0.0.1:5000/api/users/profile/${currentUser.value}`)
+
+  const url = `${API_BASE_URL}/api/users/profile/${currentUser.value}`
+  const data = await fetchAPI(url)
   user.value = data
 
   if ("error" in data) {

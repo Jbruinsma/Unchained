@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { fetchAPI, postToAPI } from '@/utils/api.js'
 import { displayArtist } from '@/utils/display.js'
 import { shufflePlaylist } from '@/utils/playlist.js'
+import { API_BASE_URL } from '@/utils/variables.js'
 
 export const useMusicStore = defineStore('music', () => {
   // Default values
@@ -51,8 +52,8 @@ export const useMusicStore = defineStore('music', () => {
       const shuffle = shuffleOn.value
 
       let url
-      if (startingMusicPieceIndex === null) { url = `http://127.0.0.1:5000/api/playlists/${playlistOwner}/${playlistUUID}/play-shuffled/` }
-      else { url = `http://127.0.0.1:5000/api/playlists/${playlistOwner}/${playlistUUID}/play/${startingMusicPieceIndex}?shuffle=${shuffle}`}
+      if (startingMusicPieceIndex === null) { url = `${API_BASE_URL}/api/playlists/${playlistOwner}/${playlistUUID}/play-shuffled/` }
+      else { url = `${API_BASE_URL}/api/playlists/${playlistOwner}/${playlistUUID}/play/${startingMusicPieceIndex}?shuffle=${shuffle}`}
 
       const data = await fetchAPI(url)
 
@@ -89,7 +90,7 @@ export const useMusicStore = defineStore('music', () => {
     }
 
     try {
-      const url = `http://127.0.0.1:5000/api/users/${currentUser}/update-last-playback`
+      const url = `${API_BASE_URL}/api/users/${currentUser}/update-last-playback`
       const data = await postToAPI(url, payload)
       console.log('Saved last playback:', data)
     } catch (err) {
