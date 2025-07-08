@@ -1,4 +1,4 @@
-# LOGIN, LOGOUT, REGISTER
+# LOGIN, REGISTER
 
 
 from flask import Blueprint, request, jsonify
@@ -6,6 +6,7 @@ from flask import Blueprint, request, jsonify
 from backend.classes.user import User
 from backend.classes.user_manager import save_user_manager
 from backend.instances import user_manager
+
 
 auth_bp = Blueprint('auth', __name__)
 
