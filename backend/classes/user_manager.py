@@ -1,29 +1,30 @@
+from backend.classes.user import User
 
 
 class AVLNode:
-    def __init__(self, key, value=None):
-        self.key = key
-        self.value = value
-        self.left = None
-        self.right = None
-        self.height = 1
+    def __init__(self, key : str, value : User = None) -> None:
+        self.key : str = key
+        self.value : User = value
+        self.left : AVLNode | None = None
+        self.right : AVLNode | None = None
+        self.height : int = 1
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'AVLNode(key={self.key}, value={self.value}, height={self.height})'
 
 class UserManager:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.root = None
 
     @staticmethod
-    def get_height(node):
+    def get_height(node : AVLNode) -> int:
         return node.height if node else 0
 
-    def get_balance(self, node):
+    def get_balance(self, node : AVLNode) -> int:
         return self.get_height(node.left) - self.get_height(node.right) if node else 0
 
-    def right_rotate(self, y):
+    def right_rotate(self, y : AVLNode) -> AVLNode:
         x = y.left
         T2 = x.right
 
@@ -37,7 +38,7 @@ class UserManager:
 
         return x
 
-    def left_rotate(self, x):
+    def left_rotate(self, x : AVLNode) -> AVLNode:
         y = x.right
         T2 = y.left
 
@@ -51,10 +52,10 @@ class UserManager:
 
         return y
 
-    def insert(self, key, value=None):
+    def insert(self, key : str, value : User = None) -> None:
         self.root = self._insert(self.root, key, value)
 
-    def _insert(self, node, key, value):
+    def _insert(self, node : AVLNode, key : str, value : User) -> AVLNode:
         if not node:
             return AVLNode(key, value)
         if key < node.key:
@@ -87,16 +88,16 @@ class UserManager:
         return node
 
     @staticmethod
-    def min_value_node(node):
+    def min_value_node(node : AVLNode) -> AVLNode:
         current = node
         while current.left:
             current = current.left
         return current
 
-    def delete(self, key):
+    def delete(self, key : str) -> None:
         self.root = self._delete(self.root, key)
 
-    def _delete(self, node, key):
+    def _delete(self, node : AVLNode, key : str) -> AVLNode:
         if not node:
             return node
         if key < node.key:
@@ -139,13 +140,13 @@ class UserManager:
 
         return node
 
-    def contains_key(self, key):
+    def contains_key(self, key : str) -> bool:
         return self._search(self.root, key) is not None
 
-    def search(self, key):
+    def search(self, key : str) -> User | None:
         return self._search(self.root, key)
 
-    def _search(self, node, key):
+    def _search(self, node : AVLNode, key : str) -> User | None:
         if not node:
             return None
         if key == node.key:
@@ -154,7 +155,7 @@ class UserManager:
             return self._search(node.left, key)
         return self._search(node.right, key)
 
-    def update_key(self, old_key, new_key):
+    def update_key(self, old_key : str, new_key : str) -> bool:
         user_data = self.search(old_key)
         if user_data is None:
             return False
