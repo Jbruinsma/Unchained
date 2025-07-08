@@ -1,9 +1,11 @@
+from typing import Any
+
 from backend.classes.music_piece import MusicPiece
 
 
 class Playlist:
 
-    def __init__(self, uuid : str, owner : str, name : str, is_public : bool = False, playlist_cover = None):
+    def __init__(self, uuid : str, owner : str, name : str, is_public : bool = False, playlist_cover = None) -> None:
         self.UUID : str = uuid
         self.owner : str = owner
         self.name : str = name
@@ -14,13 +16,13 @@ class Playlist:
         self.shared_with: list[dict[str, bool]] = []
         self.saved_by: list[str] = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"UUID: {self.UUID}, Name: {self.name}, Public? {self.is_public}, Pieces: {len(self.music_pieces)}, Shared with: {len(self.shared_with)}"
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.music_pieces)
 
-    def update_playlist(self, name : str, is_public : bool, playlist_cover : str, pieces_deleted : list[dict[str, str]]):
+    def update_playlist(self, name : str, is_public : bool, playlist_cover : str, pieces_deleted : list[dict[str, str]]) -> None:
         self.update_playlist_name(name)
         self.update_public_status(is_public)
         self.update_playlist_cover(playlist_cover)
@@ -71,8 +73,7 @@ class Playlist:
         if music_piece not in self.music_pieces:
             self.music_pieces.append(music_piece)
 
-    def to_dict(self):
-
+    def to_dict(self) -> dict[str, Any]:
         return  {
             "uuid": self.UUID,
             "owner": self.owner,

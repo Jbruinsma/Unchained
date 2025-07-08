@@ -1,6 +1,9 @@
+from typing import Any
+
+
 class MusicPiece:
 
-    def __init__(self, uuid: str, name: str, file_name: str, cover=None, is_favorite: bool = False):
+    def __init__(self, uuid: str, name: str, file_name: str, cover=None, is_favorite: bool = False) -> None:
         self.UUID: str = uuid
         self.mp3_file: str = f"/uploads/mp3s/{file_name}"
         self.cover = cover or "/icon.svg"
@@ -8,7 +11,7 @@ class MusicPiece:
         self.artist : str | None = None
         self.is_favorite: bool = is_favorite
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "uuid": self.UUID,
             "title": self.name,
