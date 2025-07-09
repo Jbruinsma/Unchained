@@ -1,6 +1,5 @@
 <template>
   <div class="profile-page">
-    <!-- Top nav bar -->
     <nav class="navbar">
       <div class="container nav-content">
         <router-link to="/" class="site-name">Unchained</router-link>
@@ -8,6 +7,9 @@
           <span class="nav-link" @click="rerouteToDashboard()">Playlists</span>
           <span class="nav-link" @click="rerouteToPublicProfile()">Profile</span>
           <span class="nav-link" @click="rerouteToSettings()">Settings</span>
+        </div>
+        <div class="nav-search">
+          <input type="text" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search user..." />
         </div>
       </div>
     </nav>
@@ -54,23 +56,29 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import {onMounted, ref} from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import {fetchAPI} from "@/utils/api.js";
 import {resolveCoverURL} from "@/utils/display.js";
 import { rerouteToDashboard, rerouteToPublicProfile, rerouteToSettings } from '@/utils/reroutes.js'
 import { API_BASE_URL } from '@/utils/variables.js'
+import router from '@/router/index.js'
 
 const route = useRoute()
-const username = route.params.username
+const username = computed(() => route.params.username)
 const user = ref(null)
 const publicPlaylists = ref([])
 
-onMounted(async () => {
-  const url = `${API_BASE_URL}/api/users/profile/${username}`
+const searchQuery = ref('')
+
+async function loadProfile() {
+  const url = `${API_BASE_URL}/api/users/profile/${username.value}`
   const data = await fetchAPI(url)
   user.value = data
 
-  if ("error" in data) { console.log("Error fetching user:", data.error) }
+  if ("error" in data) {
+    console.log("Error fetching user:", data.error)
+    return
+  }
 
   const userPlaylists = user.value.playlists
   for (const playlist in userPlaylists){
@@ -79,8 +87,21 @@ onMounted(async () => {
       publicPlaylists.value.push(currPlaylist)
     }
   }
+}
 
+onMounted(loadProfile)
+
+watch(() => route.params.username,() => {
+  loadProfile()
 })
+
+
+function performSearch() {
+  if (searchQuery.value.trim() !== '') {
+    router.push({ name: 'Profile', params: { username: searchQuery.value.trim() } })
+    searchQuery.value = ''
+  }
+}
 
 </script>
 
@@ -110,4 +131,7 @@ onMounted(async () => {
 .profile-pic{background:#444;background-position:center;background-repeat:no-repeat;background-size:cover;border-radius:50%;height:150px;margin-bottom:1rem;width:150px;}
 .site-name{color:#fff;font-family:'Libertinus Math',serif;font-size:1.8rem;text-decoration:none;}
 .username{color:#ddd;font-family:'Libertinus Math',serif;font-size:1.8rem;}
+.nav-search input{background:#121212;border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#f0f0f0;font-size:1rem;padding:0.4rem 0.8rem;transition:border 0.3s;width:180px;}
+.nav-search input:focus{border:1px solid #f0f0f0;outline:none;}
+.nav-search{margin-left:2rem;}
 </style>
