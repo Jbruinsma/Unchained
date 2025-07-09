@@ -92,6 +92,7 @@ async function loadProfile() {
 onMounted(loadProfile)
 
 watch(() => route.params.username,() => {
+  publicPlaylists.value = []
   loadProfile()
 })
 
