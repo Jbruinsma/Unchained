@@ -81,9 +81,9 @@ async function loadProfile() {
   }
 
   const userPlaylists = user.value.playlists
-  for (const playlist in userPlaylists){
-    const currPlaylist = userPlaylists[playlist]
-    if (currPlaylist.isPublic === true){
+  for (const playlistID in userPlaylists){
+    const currPlaylist = userPlaylists[playlistID]
+    if (currPlaylist.isPublic === true && currPlaylist.owner === username.value) {
       publicPlaylists.value.push(currPlaylist)
     }
   }
@@ -115,6 +115,9 @@ function performSearch() {
 .nav-link{color:#fff;font-weight:500;text-decoration:none;transition:color 0.3s;}
 .nav-link:hover{color:#ccc;cursor:pointer;}
 .nav-links{display:flex;gap:2rem;}
+.nav-search{display:flex;justify-content:flex-end;margin-left:2rem;}
+.nav-search input{background:#121212;border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#f0f0f0;font-size:1rem;padding:0.4rem 0.8rem;transition:border 0.3s;width:180px;}
+.nav-search input:focus{border:1px solid #f0f0f0;outline:none;}
 .navbar{background:#000;padding:1rem 0;}
 .not-found{margin:4rem auto;max-width:600px;text-align:center;}
 .not-found h1{font-size:2rem;margin-bottom:1rem;}
@@ -132,7 +135,13 @@ function performSearch() {
 .profile-pic{background:#444;background-position:center;background-repeat:no-repeat;background-size:cover;border-radius:50%;height:150px;margin-bottom:1rem;width:150px;}
 .site-name{color:#fff;font-family:'Libertinus Math',serif;font-size:1.8rem;text-decoration:none;}
 .username{color:#ddd;font-family:'Libertinus Math',serif;font-size:1.8rem;}
-.nav-search input{background:#121212;border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#f0f0f0;font-size:1rem;padding:0.4rem 0.8rem;transition:border 0.3s;width:180px;}
-.nav-search input:focus{border:1px solid #f0f0f0;outline:none;}
-.nav-search{margin-left:2rem;}
+@media (max-width: 768px){
+  .nav-content{align-items:flex-start;flex-direction:column;gap:1rem;}
+  .nav-links{flex-wrap:wrap;gap:1rem;justify-content:center;width:100%;}
+  .nav-search{justify-content:center;margin-left:0;width:100%;}
+  .nav-search input{width:80%;}
+  .profile-container{align-items:center;flex-direction:column;gap:2rem;}
+  .playlist-grid{grid-template-columns:1fr;justify-items:center;width:100%;}
+}
+
 </style>

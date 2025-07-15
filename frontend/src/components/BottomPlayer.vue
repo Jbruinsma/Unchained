@@ -265,4 +265,13 @@ function nextTrack() {
 .volume input[type="range"]::-webkit-slider-runnable-track { background: #666; border-radius: 3px; height: 6px; }
 .volume input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; background: #fff; border-radius: 50%; height: 14px; margin-top: -4px; width: 14px; }
 .volume-icon { width: 15px; height: 15px; margin-left: 0.5rem; }
+
+@media (max-width:600px){
+  .bottom-player{flex-direction:column;align-items:center;gap:1rem;padding:1rem;}
+  .now-playing-info{flex-direction:column;align-items:center;text-align:center;}
+  .controls{justify-content:center;width:100%;}
+  .right-side{justify-content:center;width:100%;flex-wrap:wrap;}
+}
+
+
 </style>
